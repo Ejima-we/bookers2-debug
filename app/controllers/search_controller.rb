@@ -1,22 +1,18 @@
 class SearchController < ApplicationController
-  
+
   def search
-    @model = params["search"]["model"]
-    @content = params["search"]["content"]
-    @method = params["search"]["method"]
-    @records = search_for(@model,@content,@method).page(params[:page]).per(5)
-  end
-  
-  private
-  
-  def search_for(model, content, method)
-    if model == "user"
-      method == "partial"
-      User.where("name LIKE ?", "%"+content+"%")
+    @range = params[:range]
+    search = params[:search]
+    word = params[:word]
+
+    if @range == "1"
+      @user = User.search(search,word)
     else
-      method == "partial"
-      Book.where("title LIKE ?", "%"+content+"%")
+      @book = Book.search(search,word)
     end
   end
+
+
   
+
 end

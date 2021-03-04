@@ -12,17 +12,32 @@ class User < ApplicationRecord
 
   attachment :profile_image, destroy: false
 
-  def follow(user_id)
+  def create(user_id)
     follower.create(followed_id:user_id)
   end
 
-  def unfollow(user_id)
+  def destroy(user_id)
     follower.find_by(followed_id:user_id).destroy
   end
 
   def following?(user)
     following_user.include?(user)
   end
+
+  	def self.search(search, word)
+		if search == "forward_match"
+			@user = User.where("name LIKE?", "#{word}%")
+		elsif search == "backward_match"
+			@user = User.where("name LIKE?", "%#{word}")
+		elsif search == "perfect_match"
+			@user == User.where("#{word}")
+		elsif search == "partial_match"
+			@user = User.where("name LIKE?", "%#{word}%")
+		end
+	end
+
+
+
 
   validates :name, length: {maximum: 20, minimum: 2}, uniqueness: true
   validates :introduction, length: { maximum: 50 }
